@@ -1434,3 +1434,461 @@
     transform: none;
   }
 }
+
+/* =====================================================================
+   MOBILE-ONLY REDESIGN (phones, 700px and below)
+   Everything for phones lives in this one block, so desktop and tablet
+   rules above are not changed. Keep this block at the very bottom.
+===================================================================== */
+@media (max-width: 700px) {
+  html {
+    scroll-padding-top: 104px;
+  }
+
+  .portfolio-app {
+    --g: 22px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Bigger tap areas for text links, without changing how they look */
+  .case-links a,
+  .text-link,
+  .footer a {
+    position: relative;
+  }
+
+  .case-links a::after,
+  .text-link::after,
+  .footer a::after {
+    position: absolute;
+    inset: -12px -6px;
+    content: '';
+  }
+
+  /* ---------- Header: logo + theme on row 1, section nav on row 2 ---------- */
+  .site-header {
+    flex-wrap: wrap;
+    align-items: center;
+    height: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .brand {
+    order: 1;
+    height: 56px;
+  }
+
+  .header-right {
+    display: contents;
+  }
+
+  .theme-toggle {
+    order: 2;
+    min-height: 36px;
+    padding: 8px 13px;
+  }
+
+  .header-nav {
+    order: 3;
+    display: flex;
+    flex: 0 0 100%;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 0 calc(var(--g) * -1);
+    padding: 0 var(--g);
+    border-top: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .header-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header-nav a {
+    position: relative;
+    padding: 13px 2px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+
+  .header-nav a.active::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    background: var(--text);
+    content: '';
+  }
+
+  /* ---------- Hero: photo first, then name, then everything else ---------- */
+  .hero {
+    justify-items: center;
+    gap: 28px;
+    padding: 34px var(--g) 52px;
+    text-align: center;
+  }
+
+  .portrait {
+    order: -1;
+    justify-self: center;
+    width: min(70vw, 270px);
+    margin: 10px 0 0;
+  }
+
+  /* Even outline all the way round, so the photo sits properly centered */
+  .portrait::before {
+    inset: -10px;
+  }
+
+  .portrait figcaption {
+    justify-content: center;
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero h1 {
+    order: -2;
+    margin: 0;
+    font-size: clamp(44px, 14vw, 64px);
+    text-align: center;
+  }
+
+  .eyebrow {
+    order: -1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 10px;
+    margin: 18px 0 0;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .hero-lead {
+    max-width: 15em;
+    margin: 26px auto 0;
+    font-size: clamp(23px, 6.4vw, 29px);
+  }
+
+  .hero-support,
+  .hero-detail {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+  }
+
+  .hero-support {
+    margin-top: 16px;
+    font-size: 15px;
+  }
+
+  .hero-detail {
+    margin-top: 8px;
+    font-size: 13.5px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    margin-top: 26px;
+  }
+
+  .hero-actions .btn-solid {
+    width: 100%;
+    max-width: 320px;
+    min-height: 50px;
+    justify-content: center;
+  }
+
+  .hero-looking {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .hero-looking span {
+    display: block;
+    margin: 0 0 6px;
+  }
+
+  /* ---------- Shared section rhythm ---------- */
+  .section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .section-heading {
+    margin-bottom: 28px;
+  }
+
+  .section-meta {
+    margin-bottom: 16px;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(38px, 12vw, 54px);
+  }
+
+  .section-note {
+    margin-top: 24px;
+    font-size: 12.5px;
+  }
+
+  [data-reveal] {
+    transform: translateY(12px);
+    transition-duration: 0.55s;
+  }
+
+  /* ---------- Work ---------- */
+  .case {
+    gap: 26px;
+    padding-top: 24px;
+  }
+
+  .case-side h3 {
+    font-size: clamp(40px, 12.5vw, 56px);
+  }
+
+  .case-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px 22px;
+    margin-top: 20px;
+  }
+
+  .case-row {
+    padding: 18px 0;
+  }
+
+  .case-row dt {
+    padding-top: 0;
+  }
+
+  .case-row p,
+  .case-row li {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .case-empty {
+    font-size: 23px;
+  }
+
+  /* ---------- About ---------- */
+  .about-layout {
+    gap: 34px;
+  }
+
+  .about-copy .about-lead {
+    margin-bottom: 22px;
+    font-size: clamp(27px, 7.6vw, 36px);
+  }
+
+  .about-copy p {
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .about-facts div {
+    padding: 14px 0;
+  }
+
+  /* ---------- Skills: logo left, name / detail / level stacked ---------- */
+  .ledger-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: start;
+    gap: 4px 14px;
+    padding: 20px 0;
+  }
+
+  .ledger-row:hover {
+    padding-left: 0;
+    background: transparent;
+  }
+
+  .ledger-logo {
+    grid-row: 1 / span 3;
+    align-self: start;
+    width: 44px;
+    height: 44px;
+  }
+
+  .ledger-row h3 {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 30px;
+  }
+
+  .ledger-row p {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 14.5px;
+  }
+
+  .ledger-level {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: start;
+    margin-top: 8px;
+    font-size: 9.5px;
+    text-align: left;
+  }
+
+  /* ---------- Achievements ---------- */
+  .timeline li {
+    padding: 20px 0;
+  }
+
+  .timeline h3 {
+    font-size: 22px;
+  }
+
+  .timeline p {
+    font-size: 14.5px;
+  }
+
+  /* ---------- Résumé ---------- */
+  .resume {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .resume h2 {
+    font-size: 36px;
+  }
+
+  .resume-row {
+    gap: 20px;
+  }
+
+  .resume-side .btn-solid {
+    width: 100%;
+    min-height: 50px;
+    justify-content: center;
+  }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    padding: 72px var(--g) 80px;
+  }
+
+  .contact h2 {
+    font-size: clamp(46px, 15vw, 72px);
+  }
+
+  .contact-email {
+    margin: 24px 0 16px;
+    font-size: clamp(18px, 5.8vw, 26px);
+  }
+
+  .contact p {
+    font-size: 14.5px;
+  }
+
+  .contact-actions {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .contact-actions > * {
+    width: 100%;
+    min-height: 50px;
+    justify-content: center;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 28px;
+    padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+  }
+
+  .footer-right {
+    gap: 26px;
+  }
+
+  /* ---------- Floating widgets ---------- */
+  .music-slot,
+  .build-widget {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Sliders: thin line, but a taller area to grab with a thumb */
+  .range-input {
+    height: 22px;
+    background:
+      linear-gradient(
+        to right,
+        var(--text) 0 var(--range-progress),
+        var(--line-strong) var(--range-progress) 100%
+      )
+      center / 100% 3px no-repeat;
+    border-radius: 0;
+  }
+
+  .range-input::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  .range-input::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  .music-btn {
+    height: 34px;
+  }
+
+  .music-play {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* Very small phones (iPhone SE size and smaller) */
+@media (max-width: 360px) {
+  .portfolio-app {
+    --g: 18px;
+  }
+
+  .music {
+    --music-closed: 60px;
+  }
+
+  .music-body {
+    gap: 6px;
+    padding-right: 12px;
+  }
+
+  .music-volume {
+    width: 44px;
+  }
+
+  .music-volume svg {
+    display: none;
+  }
+
+  .ledger-row h3 {
+    font-size: 26px;
+  }
+
+  .header-nav {
+    gap: 12px;
+  }
+}

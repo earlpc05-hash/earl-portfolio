@@ -27,5 +27,3 @@ dist-ssr
 .env.*
 !.env.example
 
-# Portfolio music files
-public/music/
