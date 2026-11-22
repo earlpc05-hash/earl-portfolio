@@ -5,7 +5,7 @@ const EMAIL = 'earlpersonal16@gmail.com';
 const GITHUB = 'https://github.com/earlpc05-hash';
 
 
-const PHOTO_SRC = '/images/earl.jpg';
+const PHOTO_SRC = '/earl.jpg';
 
 const RESUME_URL = '';
 
