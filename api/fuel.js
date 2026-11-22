@@ -3,13 +3,17 @@
 //   GET  /api/fuel  -> { count }            (read the shared total)
 //   POST /api/fuel  -> { count }            (add exactly one tap)
 //
-// The total lives in a Google Sheet. A Google Apps Script web app reads and
-// updates it. This file is the only thing that talks to that script, so the
-// script's address and secret never reach the browser.
+// The total lives in cell B1 of a Google Sheet. A Google Apps Script web app
+// reads and updates it. This file is the only thing that talks to that script,
+// so the script's address and secret never reach the browser.
 //
 // Environment variables (set in Vercel, and in .env.local for local testing):
 //   GOOGLE_SHEET_WEBAPP_URL  the Web App URL that ends in /exec
 //   GOOGLE_SHEET_SECRET      the same secret text that is inside the script
+//
+// Every error reply carries a short "code" so you can see WHAT failed
+// (never any secret): not_configured, google_unreachable, google_not_json,
+// google_unauthorized, sheet_error, busy, unexpected.
 
 import { createHash } from 'node:crypto';
 
@@ -31,13 +35,29 @@ function getClientId(req, secret) {
   return createHash('sha256').update(ip + secret).digest('hex');
 }
 
+function fail(code) {
+  const error = new Error(code);
+  error.code = code;
+  return error;
+}
+
 async function callScript(url, options) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    // Google answers with a redirect first; fetch follows it automatically.
-    const response = await fetch(url, { redirect: 'follow', signal: controller.signal, ...options });
-    return await response.json();
+    let response;
+    try {
+      // Google answers with a redirect first; fetch follows it automatically.
+      response = await fetch(url, { redirect: 'follow', signal: controller.signal, ...options });
+    } catch {
+      throw fail('google_unreachable');
+    }
+    try {
+      return await response.json();
+    } catch {
+      // Usually a Google login page: the Web App is not set to "Anyone"
+      throw fail('google_not_json');
+    }
   } finally {
     clearTimeout(timer);
   }
@@ -47,12 +67,20 @@ function isCount(value) {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0;
 }
 
+// Turn an error message from the Apps Script into a short code
+function scriptErrorCode(error) {
+  if (error === 'unauthorized') return 'google_unauthorized'; // secret does not match
+  if (error === 'server_error') return 'sheet_error'; // tab "Counter" or cell B1 problem
+  if (error === 'busy') return 'busy';
+  return 'unexpected';
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   const config = getConfig();
   if (!config) {
-    return res.status(500).json({ error: 'Counter is not configured.' });
+    return res.status(500).json({ error: 'Counter is not configured.', code: 'not_configured' });
   }
 
   try {
@@ -61,8 +89,10 @@ export default async function handler(req, res) {
         method: 'GET',
       });
 
-      if (isCount(data?.count)) return res.status(200).json({ count: data.count });
-      return res.status(502).json({ error: 'Counter is temporarily unavailable.' });
+      if (isCount(data?.count) && !data.error) return res.status(200).json({ count: data.count });
+      return res
+        .status(502)
+        .json({ error: 'Counter is temporarily unavailable.', code: scriptErrorCode(data?.error) });
     }
 
     if (req.method === 'POST') {
@@ -79,19 +109,19 @@ export default async function handler(req, res) {
 
       // Tapped again too quickly: not counted, but the total is still valid
       if (data?.error === 'too_fast' && isCount(data.count)) {
-        return res.status(429).json({ error: 'Too many taps.', count: data.count });
+        return res.status(429).json({ error: 'Too many taps.', code: 'too_fast', count: data.count });
       }
 
-      if (data?.error === 'busy') {
-        return res.status(503).json({ error: 'Counter is busy. Try again.' });
-      }
-
-      return res.status(502).json({ error: 'Counter is temporarily unavailable.' });
+      return res
+        .status(data?.error === 'busy' ? 503 : 502)
+        .json({ error: 'Counter is temporarily unavailable.', code: scriptErrorCode(data?.error) });
     }
 
     res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Method not allowed.' });
-  } catch {
-    return res.status(502).json({ error: 'Counter is temporarily unavailable.' });
+  } catch (error) {
+    return res
+      .status(502)
+      .json({ error: 'Counter is temporarily unavailable.', code: error?.code || 'unexpected' });
   }
 }

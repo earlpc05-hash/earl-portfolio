@@ -1,81 +1,48 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
-/* ------------------------------------------------------------------
-   THINGS YOU CAN EDIT (everything else is layout and behavior)
-------------------------------------------------------------------- */
-
 const EMAIL = 'earlpersonal16@gmail.com';
 const GITHUB = 'https://github.com/earlpc05-hash';
 
-// Put your photo at: public/earl.jpg  (portrait orientation works best)
-const PHOTO_SRC = '/earl.jpg';
 
-// When your résumé is ready, put the PDF at public/resume/Earl-Panuncial-Resume.pdf
-// and change this to '/resume/Earl-Panuncial-Resume.pdf'
+const PHOTO_SRC = '/images/earl.jpg';
+
 const RESUME_URL = '';
 
 const THEME_KEY = 'earl-portfolio-theme-v2';
-const COUNTER_URL = 'https://counterapi.com/api/earl-panuncial-portfolio/view/portfolio-visits';
+const FUEL_API = '/api/fuel'; 
 
 const TRACKS = [
+  { title: 'Counting', src: '/music/Counting.mp3' },
   {
     title: 'bye (Altare Remix)',
     src: '/music/Ariana%20Grande%20-%20bye%20%5BAltare%20Remix%5D.mp3',
   },
-  {
-    title: 'One Of The Girls',
-    src: '/music/One%20Of%20The%20Girls%20-%20The%20Weeknd.mp3',
-  },
-  {
-    title: 'Trance',
-    src: '/music/Trance%20-%20Metro%20Boomin.mp3',
-  },
-  {
-    title: 'Confident',
-    src: '/music/Confident%20-%20Justin%20Bieber.mp3',
-  },
-  {
-    title: 'hate that i made you love me',
-    src: '/music/hate%20that%20i%20made%20you%20love%20me%20-%20Ariana%20Grande.mp3',
-  },
-  {
-    title: 'Baby Powder',
-    src: '/music/Baby%20Powder%20-%20Jenevieve.mp3',
-  },
-  {
-    title: 'Disillusioned',
-    src: '/music/Disillusioned%20-%20Daniel%20Caesar.mp3',
-  },
-  {
-    title: 'Like I Want You',
-    src: '/music/Like%20I%20Want%20You%20-%20GIVEON.mp3',
-  },
-  {
-    title: 'blue',
-    src: '/music/blue%20-%20kamal.mp3',
-  },
-  {
-    title: 'Paris in the Rain',
-    src: '/music/Paris%20in%20the%20Rain%20-%20Lauv.mp3',
-  },
 ];
 
-/* ByteBond case study.
-   Only fields you fill in are shown on the page. Anything left as '' or []
-   is simply skipped, so nothing is invented for you. */
+
 const BYTEBOND = {
   name: 'ByteBond',
-  summary: '', // What the project is, in one or two sentences.
-  why: '', // Why you made it.
-  role: '', // Your actual role (solo? group? which part?).
-  contributions: [], // ['Built the ...', 'Designed the ...']
-  stack: [], // ['HTML', 'CSS', 'JavaScript']
-  decisions: [], // Important technical decisions, one per line.
-  challenge: '', // One real problem you hit and how you solved it.
-  status: 'Live on Vercel. This was my first full project, made in my second year as a BSIT student.',
+  summary: 'A collaborative organization portfolio website showcasing ByteBond, its members, projects, and shared vision.',
+  why: 'Created as a school organization portfolio project to establish an online presence and present the organization in a professional and engaging way.',
+  role: 'Frontend Developer',
+
+  contributions: [
+    'Built the frontend using React.',
+    'Collaborated with my partner, who handled the backend development.',
+    'Contributed to the website layout, responsive design, content, and interactive elements.'
+  ],
+
+  stack: ['HTML', 'CSS', 'JavaScript', 'React', 'Vite', 'Tailwind CSS'],
+
+  decisions: [],
+
+  challenge: 'This was our first web development project as a group. We had to learn how to collaborate effectively, divide responsibilities, and use GitHub for version control.',
+
+  status: 'Live on Vercel. This was my first major collaborative web development project, created during my second year as a BSIT student.',
+
   demo: 'https://bytebond.vercel.app/',
-  repo: '', // Paste the ByteBond GitHub repository URL here.
+  repo: 'https://github.com/earlpc05-hash/Bytebond',
 };
 
 const SKILLS = [
@@ -86,8 +53,6 @@ const SKILLS = [
   { name: 'React', detail: 'Components, props, and state. This site is built with it.', level: 'Learning the fundamentals', logo: 'react' },
 ];
 
-// Add real certificates or awards here, for example:
-// { title: 'Certificate name', issuer: 'Who gave it', year: '2026', link: '' }
 const ACHIEVEMENTS = [];
 
 const NAV = [
@@ -99,10 +64,6 @@ const NAV = [
   ['resume', 'Résumé'],
   ['contact', 'Contact'],
 ];
-
-/* ------------------------------------------------------------------
-   SMALL COMPONENTS
-------------------------------------------------------------------- */
 
 function Icon({ name, size = 18 }) {
   const common = {
@@ -138,7 +99,6 @@ function Icon({ name, size = 18 }) {
   return <svg {...common}>{paths[name] || null}</svg>;
 }
 
-/* Simplified logo marks in each technology's brand colors. */
 function TechLogo({ name }) {
   const props = { width: 34, height: 34, viewBox: '0 0 32 32', 'aria-hidden': true };
 
@@ -197,16 +157,6 @@ function formatTime(value) {
   return `${minutes}:${seconds}`;
 }
 
-function isLocalHost() {
-  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-}
-
-/* ------------------------------------------------------------------
-   MUSIC PLAYER: one capsule that grows sideways in place.
-   The <audio> element lives outside the part that hides, so music
-   keeps playing while the capsule opens and closes.
-------------------------------------------------------------------- */
-
 function MusicPlayer({ open, onToggle, onClose }) {
   const rootRef = useRef(null);
   const audioRef = useRef(null);
@@ -223,7 +173,7 @@ function MusicPlayer({ open, onToggle, onClose }) {
     if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
-  // When the track changes and music was playing, keep playing the new track.
+ 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !wantPlayRef.current) return;
@@ -234,7 +184,6 @@ function MusicPlayer({ open, onToggle, onClose }) {
     });
   }, [index]);
 
-  // Escape or a click outside folds the capsule back (audio keeps going).
   useEffect(() => {
     if (!open) return undefined;
 
@@ -386,7 +335,6 @@ function MusicPlayer({ open, onToggle, onClose }) {
   );
 }
 
-/* Photo with a safe fallback: if the file is missing, a monogram shows instead. */
 function Portrait() {
   const [failed, setFailed] = useState(false);
 
@@ -448,9 +396,142 @@ function CaseRow({ label, kind = 'text', value }) {
   );
 }
 
-/* ------------------------------------------------------------------
-   APP
-------------------------------------------------------------------- */
+function useCountTo(target) {
+  const [shown, setShown] = useState(0);
+  const shownRef = useRef(0);
+
+  useEffect(() => {
+    if (target === null || shownRef.current === target) return undefined;
+
+    const from = shownRef.current;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reduce ? 0 : Math.abs(target - from) > 1 ? 650 : 240;
+    const start = performance.now();
+    let frame = 0;
+
+    const step = (now) => {
+      const t = duration === 0 ? 1 : Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const value = Math.round(from + (target - from) * eased);
+      shownRef.current = value;
+      setShown(value);
+      if (t < 1) frame = requestAnimationFrame(step);
+    };
+
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [target]);
+
+  return shown;
+}
+
+function FuelTheBuild() {
+  const [count, setCount] = useState(null); // total confirmed by the server
+  const [unavailable, setUnavailable] = useState(false); // the first load failed
+  const [charging, setCharging] = useState(false); // battery animation
+  const [saving, setSaving] = useState(0); // taps still waiting for the server
+  const [failed, setFailed] = useState(false); // the last tap was not saved
+  const lastTapRef = useRef(0);
+  const shown = useCountTo(count);
+
+  
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(FUEL_API, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('Counter request failed');
+        return response.json();
+      })
+      .then((data) => {
+        if (cancelled) return;
+        const total = Number(data.count);
+        if (Number.isFinite(total)) setCount((current) => Math.max(current ?? 0, total));
+        else setUnavailable(true);
+      })
+      .catch(() => {
+        if (!cancelled) setUnavailable(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (!charging) return undefined;
+    const timeout = window.setTimeout(() => setCharging(false), 1100);
+    return () => window.clearTimeout(timeout);
+  }, [charging]);
+
+
+  useEffect(() => {
+    if (!failed) return undefined;
+    const timeout = window.setTimeout(() => setFailed(false), 1800);
+    return () => window.clearTimeout(timeout);
+  }, [failed]);
+
+  async function handleTap() {
+    setCharging(true); 
+
+    
+    const now = Date.now();
+    if (now - lastTapRef.current < 500) return;
+    lastTapRef.current = now;
+
+    setFailed(false);
+    setSaving((n) => n + 1);
+
+    try {
+      const response = await fetch(FUEL_API, { method: 'POST' });
+      const data = await response.json().catch(() => null);
+      const total = Number(data?.count);
+
+      
+      if (Number.isFinite(total)) setCount((current) => Math.max(current ?? 0, total));
+
+      
+      const saved = response.ok && Number.isFinite(total);
+      if (!saved && response.status !== 429) throw new Error('Tap was not saved');
+    } catch {
+      setFailed(true);
+    } finally {
+      setSaving((n) => n - 1);
+    }
+  }
+
+  const label = count === null ? (unavailable ? '—' : '···') : shown.toLocaleString();
+  const status = failed ? 'Could not save your tap. Try again.' : '';
+
+  return (
+    <div
+      className={`build-widget ${charging ? 'charging' : ''} ${saving > 0 ? 'is-saving' : ''} ${failed ? 'is-error' : ''}`}
+    >
+      <button
+        className="build-button"
+        onClick={handleTap}
+        aria-label={
+          count === null
+            ? 'Fuel the Build. Tap the battery to add one.'
+            : `Fuel the Build. ${count.toLocaleString()} taps so far. Tap the battery to add one.`
+        }
+      >
+        <span className="battery-shell" aria-hidden="true">
+          <i className="battery-cell" />
+          <i className="battery-cell" />
+          <i className="battery-cell" />
+          <span className="fuel-bolt">⚡</span>
+        </span>
+        <span className="fuel-count" aria-hidden="true">
+          <span className="fuel-num" key={count}>{label}</span>
+        </span>
+      </button>
+      <span className="sr-only" role="status" aria-live="polite">{status}</span>
+    </div>
+  );
+}
+
 
 export default function App() {
   const lightRef = useRef(null);
@@ -464,10 +545,6 @@ export default function App() {
   });
 
   const [playerOpen, setPlayerOpen] = useState(false);
-  const [visitCount, setVisitCount] = useState(null);
-  const [counterUnavailable, setCounterUnavailable] = useState(() => isLocalHost());
-  const [batteryCharging, setBatteryCharging] = useState(false);
-  const [batteryExpanded, setBatteryExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [copyState, setCopyState] = useState('idle');
 
@@ -481,38 +558,6 @@ export default function App() {
     }
   }, [theme]);
 
-  // Visit counter (Fuel the Build)
-  useEffect(() => {
-    if (isLocalHost()) return undefined;
-    let cancelled = false;
-
-    fetch(COUNTER_URL)
-      .then((response) => {
-        if (!response.ok) throw new Error('Counter request failed');
-        return response.json();
-      })
-      .then((data) => {
-        if (cancelled) return;
-        if (Number.isFinite(Number(data.value))) setVisitCount(Number(data.value));
-        else setCounterUnavailable(true);
-      })
-      .catch(() => {
-        if (!cancelled) setCounterUnavailable(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Battery charge animation
-  useEffect(() => {
-    if (!batteryCharging) return undefined;
-    const timeout = window.setTimeout(() => setBatteryCharging(false), 1100);
-    return () => window.clearTimeout(timeout);
-  }, [batteryCharging]);
-
-  // Which section is on screen (for the nav highlight)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -532,7 +577,6 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  // Gentle fade-in as sections scroll into view
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll('[data-reveal]'));
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -558,7 +602,6 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  // Cursor-following light (mouse only, no re-render on every move)
   useEffect(() => {
     const light = lightRef.current;
     if (!light || !window.matchMedia('(pointer: fine)').matches) return undefined;
@@ -904,33 +947,7 @@ export default function App() {
       </div>
 
       {/* Fuel the Build battery (bottom right), kept separate from the music player */}
-      <div
-        className={`build-widget ${batteryCharging ? 'charging' : ''} ${batteryExpanded ? 'expanded' : ''}`}
-        onMouseEnter={() => setBatteryExpanded(true)}
-        onMouseLeave={() => setBatteryExpanded(false)}
-        >
-        <div className="build-details" aria-live="polite">
-        <div className="build-details-top"><span>FUEL THE BUILD</span><span>VISIT COUNTER</span></div>
-        <div className="visit-count">
-        {visitCount === null ? (counterUnavailable ? '—' : '···') : visitCount.toLocaleString()}
-        </div>
-         <p className="build-message">Tap the battery to charge.</p>
-       </div>
-
-        <button
-          className="build-button"
-          onClick={() => { setBatteryCharging(true); setBatteryExpanded(true); }}
-          aria-label="Energize Fuel the Build battery and show portfolio visit count"
-        >
-          <span className="battery-shell" aria-hidden="true">
-            <i className="battery-cell" /><i className="battery-cell" /><i className="battery-cell" />
-          </span>
-          <span className="build-button-copy">
-            <strong>Fuel the Build</strong>
-            <small>{visitCount === null ? 'Energy for ideas' : `${visitCount.toLocaleString()} portfolio visits`}</small>
-          </span>
-        </button>
-      </div>
+      <FuelTheBuild />
     </div>
   );
 }

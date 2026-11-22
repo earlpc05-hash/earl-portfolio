@@ -1,6 +1,3 @@
-/* =====================================================================
-   LAYOUT TOKENS
-===================================================================== */
 .portfolio-app {
   --g: max(clamp(20px, 8vw, 140px), calc((100vw - 1240px) / 2));
   position: relative;
@@ -18,7 +15,6 @@
   z-index: 1;
 }
 
-/* Cursor-following light (moved by JavaScript, mouse only) */
 .cursor-light {
   position: fixed;
   top: -320px;
@@ -39,7 +35,6 @@
   }
 }
 
-/* Fade-in on scroll */
 [data-reveal] {
   opacity: 0;
   transform: translateY(18px);
@@ -51,9 +46,6 @@
   transform: none;
 }
 
-/* =====================================================================
-   HEADER AND SIDE INDEX
-===================================================================== */
 .site-header {
   position: sticky;
   top: 0;
@@ -178,9 +170,6 @@
   transform: none;
 }
 
-/* =====================================================================
-   SHARED TEXT PIECES
-===================================================================== */
 .eyebrow,
 .section-meta {
   display: flex;
@@ -253,9 +242,6 @@
   font-size: 10px;
 }
 
-/* =====================================================================
-   INTRO / HERO
-===================================================================== */
 .hero {
   position: relative;
   display: grid;
@@ -357,7 +343,6 @@
   text-transform: uppercase;
 }
 
-/* Portrait: a tall frame, offset outline, side label. Not a circle. */
 .portrait {
   position: relative;
   justify-self: end;
@@ -425,9 +410,6 @@
   text-transform: uppercase;
 }
 
-/* =====================================================================
-   SECTIONS (shared)
-===================================================================== */
 .section {
   padding: clamp(80px, 11vw, 150px) var(--g);
   border-bottom: 1px solid var(--line);
@@ -471,9 +453,6 @@
   line-height: 1.7;
 }
 
-/* =====================================================================
-   WORK: one case study, laid out like a printed spec sheet
-===================================================================== */
 .case {
   display: grid;
   grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1.45fr);
@@ -603,9 +582,6 @@
   line-height: 1.2;
 }
 
-/* =====================================================================
-   ABOUT: big lead sentence plus a quiet fact column
-===================================================================== */
 .about-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.7fr);
@@ -655,9 +631,6 @@
   line-height: 1.6;
 }
 
-/* =====================================================================
-   SKILLS: a ledger, one row per skill
-===================================================================== */
 .ledger {
   margin: 0;
   padding: 0;
@@ -714,9 +687,6 @@
   white-space: nowrap;
 }
 
-/* =====================================================================
-   ACHIEVEMENTS
-===================================================================== */
 .timeline {
   margin: 0;
   padding: 0;
@@ -756,9 +726,6 @@
   line-height: 1.65;
 }
 
-/* =====================================================================
-   RÉSUMÉ: a slim band, not a full section
-===================================================================== */
 .resume {
   padding-top: clamp(50px, 6vw, 80px);
   padding-bottom: clamp(50px, 6vw, 80px);
@@ -790,9 +757,6 @@
   line-height: 1.65;
 }
 
-/* =====================================================================
-   CONTACT: the one inverted block on the page
-===================================================================== */
 .contact {
   padding: clamp(80px, 11vw, 150px) var(--g);
   background: var(--inv-bg);
@@ -886,9 +850,6 @@
   gap: 20px;
 }
 
-/* =====================================================================
-   MUSIC PLAYER: one capsule, grows sideways in place
-===================================================================== */
 .music-slot {
   position: fixed;
   bottom: 22px;
@@ -964,7 +925,6 @@
   animation-delay: 0.32s;
 }
 
-/* The inside has a fixed width so it never squishes while the capsule grows */
 .music-body {
   display: flex;
   flex: 0 0 auto;
@@ -1104,9 +1064,6 @@
   to { height: 16px; }
 }
 
-/* =====================================================================
-   FUEL THE BUILD (battery): unchanged from your version
-===================================================================== */
 .build-widget {
   position: fixed;
   right: clamp(16px, 3vw, 40px);
@@ -1277,9 +1234,6 @@
   }
 }
 
-/* =====================================================================
-   RESPONSIVE
-===================================================================== */
 @media (max-width: 1050px) {
   .side-index {
     display: none;
@@ -1413,7 +1367,7 @@
     width: min(250px, calc(100vw - 24px));
   }
 
-  /* While the music capsule is stretched across the screen, tuck the battery away */
+  
   .player-open .build-widget {
     opacity: 0;
     pointer-events: none;
@@ -1435,11 +1389,6 @@
   }
 }
 
-/* =====================================================================
-   MOBILE-ONLY REDESIGN (phones, 700px and below)
-   Everything for phones lives in this one block, so desktop and tablet
-   rules above are not changed. Keep this block at the very bottom.
-===================================================================== */
 @media (max-width: 700px) {
   html {
     scroll-padding-top: 104px;
@@ -1450,7 +1399,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Bigger tap areas for text links, without changing how they look */
+
   .case-links a,
   .text-link,
   .footer a {
@@ -1465,7 +1414,6 @@
     content: '';
   }
 
-  /* ---------- Header: logo + theme on row 1, section nav on row 2 ---------- */
   .site-header {
     flex-wrap: wrap;
     align-items: center;
@@ -1523,7 +1471,7 @@
     content: '';
   }
 
-  /* ---------- Hero: photo first, then name, then everything else ---------- */
+
   .hero {
     justify-items: center;
     gap: 28px;
@@ -1538,7 +1486,7 @@
     margin: 10px 0 0;
   }
 
-  /* Even outline all the way round, so the photo sits properly centered */
+  
   .portrait::before {
     inset: -10px;
   }
@@ -1622,7 +1570,6 @@
     margin: 0 0 6px;
   }
 
-  /* ---------- Shared section rhythm ---------- */
   .section {
     padding-top: 64px;
     padding-bottom: 64px;
@@ -1650,7 +1597,6 @@
     transition-duration: 0.55s;
   }
 
-  /* ---------- Work ---------- */
   .case {
     gap: 26px;
     padding-top: 24px;
@@ -1685,7 +1631,6 @@
     font-size: 23px;
   }
 
-  /* ---------- About ---------- */
   .about-layout {
     gap: 34px;
   }
@@ -1705,7 +1650,7 @@
     padding: 14px 0;
   }
 
-  /* ---------- Skills: logo left, name / detail / level stacked ---------- */
+  
   .ledger-row {
     grid-template-columns: 44px minmax(0, 1fr);
     align-items: start;
@@ -1746,7 +1691,7 @@
     text-align: left;
   }
 
-  /* ---------- Achievements ---------- */
+  
   .timeline li {
     padding: 20px 0;
   }
@@ -1759,7 +1704,7 @@
     font-size: 14.5px;
   }
 
-  /* ---------- Résumé ---------- */
+  
   .resume {
     padding-top: 48px;
     padding-bottom: 48px;
@@ -1779,7 +1724,7 @@
     justify-content: center;
   }
 
-  /* ---------- Contact ---------- */
+ 
   .contact {
     padding: 72px var(--g) 80px;
   }
@@ -1809,7 +1754,6 @@
     justify-content: center;
   }
 
-  /* ---------- Footer ---------- */
   .footer {
     flex-direction: column;
     gap: 14px;
@@ -1822,13 +1766,12 @@
     gap: 26px;
   }
 
-  /* ---------- Floating widgets ---------- */
   .music-slot,
   .build-widget {
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Sliders: thin line, but a taller area to grab with a thumb */
+  
   .range-input {
     height: 22px;
     background:
@@ -1861,7 +1804,7 @@
   }
 }
 
-/* Very small phones (iPhone SE size and smaller) */
+
 @media (max-width: 360px) {
   .portfolio-app {
     --g: 18px;
@@ -1891,4 +1834,94 @@
   .header-nav {
     gap: 12px;
   }
+}
+
+.build-widget {
+  --fuel-error: #c2410c;
+}
+
+:root[data-theme='dark'] .build-widget {
+  --fuel-error: #fb923c;
+}
+
+.build-button {
+  gap: 10px;
+  min-height: 40px;
+  padding: 9px 14px 9px 12px;
+}
+
+.fuel-bolt {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.fuel-count {
+  display: inline-block;
+  min-width: 2ch;
+  overflow: hidden;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  text-align: left;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.fuel-num {
+  display: block;
+  animation: fuel-roll 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.build-widget.is-saving .fuel-count {
+  opacity: 0.5;
+}
+
+.build-widget.is-error .battery-shell {
+  border-color: var(--fuel-error);
+}
+
+.build-widget.is-error .battery-shell::after {
+  background: var(--fuel-error);
+}
+
+.build-widget.is-error .fuel-count {
+  color: var(--fuel-error);
+  animation: fuel-shake 0.4s ease;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes fuel-roll {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fuel-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
