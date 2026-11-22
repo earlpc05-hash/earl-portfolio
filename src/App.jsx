@@ -12,11 +12,47 @@ const RESUME_URL = '';
 const THEME_KEY = 'earl-portfolio-theme-v2';
 const FUEL_API = '/api/fuel'; 
 
+
 const TRACKS = [
-  { title: 'Counting', src: '/music/Counting.mp3' },
   {
     title: 'bye (Altare Remix)',
     src: '/music/Ariana%20Grande%20-%20bye%20%5BAltare%20Remix%5D.mp3',
+  },
+  {
+    title: 'One Of The Girls',
+    src: '/music/One%20Of%20The%20Girls%20-%20The%20Weeknd.mp3',
+  },
+  {
+  title: 'Trance',
+  src: '/music/Trance%20-%20Metro%20Boomin.mp3',
+  },
+  {
+    title: 'Confident',
+    src: '/music/Confident%20-%20Justin%20Bieber.mp3',
+  },
+  {
+    title: 'hate that i made you love me',
+    src: '/music/hate%20that%20i%20made%20you%20love%20me%20-%20Ariana%20Grande.mp3',
+  },
+  {
+    title: 'Baby Powder',
+    src: '/music/Baby%20Powder%20-%20Jenevieve.mp3',
+  },
+  {
+    title: 'Disillusioned',
+    src: '/music/Disillusioned%20-%20Daniel%20Caesar.mp3',
+  },
+  {
+    title: 'Like I Want You',
+    src: '/music/Like%20I%20Want%20You%20-%20GIVEON.mp3',
+  },
+  {
+    title: 'blue',
+    src: '/music/blue%20-%20kamal.mp3',
+  },
+  {
+    title: 'Paris in the Rain',
+    src: '/music/Paris%20in%20the%20Rain%20-%20Lauv.mp3',
   },
 ];
 
