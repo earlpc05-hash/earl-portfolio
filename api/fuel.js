@@ -1,42 +1,50 @@
 /* global process */
-// Vercel serverless function: shared "Fuel the Build" click counter.
-// GET  /api/fuel  -> { count }
-// POST /api/fuel  -> adds exactly one click, returns { count }
+// Vercel serverless function: shared "Fuel the Build" battery tap counter.
+//   GET  /api/fuel  -> { count }            (read the shared total)
+//   POST /api/fuel  -> { count }            (add exactly one tap)
 //
-// The count lives in Upstash Redis. INCR is atomic, so two people clicking
-// at the same moment can never overwrite each other. The database URL and
-// token are read from environment variables on the server only.
+// The total lives in a Google Sheet. A Google Apps Script web app reads and
+// updates it. This file is the only thing that talks to that script, so the
+// script's address and secret never reach the browser.
+//
+// Environment variables (set in Vercel, and in .env.local for local testing):
+//   GOOGLE_SHEET_WEBAPP_URL  the Web App URL that ends in /exec
+//   GOOGLE_SHEET_SECRET      the same secret text that is inside the script
 
-const KEY = 'portfolio:fuel-the-build:clicks';
+import { createHash } from 'node:crypto';
+
+const TIMEOUT_MS = 8000;
 
 function getConfig() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return { url: url.replace(/\/$/, ''), token };
+  const url = (process.env.GOOGLE_SHEET_WEBAPP_URL || '').trim();
+  const secret = (process.env.GOOGLE_SHEET_SECRET || '').trim();
+  if (!url || !secret || !url.startsWith('https://script.google.com/')) return null;
+  return { url, secret };
 }
 
-async function redis(config, command) {
-  const response = await fetch(config.url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${config.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(command),
-  });
-
-  if (!response.ok) throw new Error(`Redis request failed (${response.status})`);
-
-  const data = await response.json();
-  if (data.error) throw new Error(data.error);
-  return data.result;
-}
-
-function getClientId(req) {
+// A scrambled ID for the visitor, used only for the "one tap per 0.4s" check.
+// The real IP address is never sent to Google or stored anywhere.
+function getClientId(req, secret) {
   const forwarded = req.headers['x-forwarded-for'];
   const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-  return (first ? first.split(',')[0].trim() : req.headers['x-real-ip']) || 'unknown';
+  const ip = (first ? first.split(',')[0].trim() : req.headers['x-real-ip']) || 'unknown';
+  return createHash('sha256').update(ip + secret).digest('hex');
+}
+
+async function callScript(url, options) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    // Google answers with a redirect first; fetch follows it automatically.
+    const response = await fetch(url, { redirect: 'follow', signal: controller.signal, ...options });
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function isCount(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
 }
 
 export default async function handler(req, res) {
@@ -49,30 +57,36 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      const value = await redis(config, ['GET', KEY]);
-      return res.status(200).json({ count: Number(value) || 0 });
+      const data = await callScript(`${config.url}?secret=${encodeURIComponent(config.secret)}`, {
+        method: 'GET',
+      });
+
+      if (isCount(data?.count)) return res.status(200).json({ count: data.count });
+      return res.status(502).json({ error: 'Counter is temporarily unavailable.' });
     }
 
     if (req.method === 'POST') {
-      // One click per visitor every 0.4s. This stops double-fires and
-      // simple scripts from inflating the number. SET ... NX only succeeds
-      // if the key does not exist yet.
-      const allowed = await redis(config, [
-        'SET',
-        `${KEY}:cooldown:${getClientId(req)}`,
-        '1',
-        'NX',
-        'PX',
-        '400',
-      ]);
+      const data = await callScript(config.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: config.secret, client: getClientId(req, config.secret) }),
+      });
 
-      if (allowed !== 'OK') {
-        const value = await redis(config, ['GET', KEY]);
-        return res.status(429).json({ error: 'Too many clicks.', count: Number(value) || 0 });
+      // A real tap: the script returns the new total
+      if (isCount(data?.count) && !data.error) {
+        return res.status(200).json({ count: data.count });
       }
 
-      const count = await redis(config, ['INCR', KEY]);
-      return res.status(200).json({ count: Number(count) });
+      // Tapped again too quickly: not counted, but the total is still valid
+      if (data?.error === 'too_fast' && isCount(data.count)) {
+        return res.status(429).json({ error: 'Too many taps.', count: data.count });
+      }
+
+      if (data?.error === 'busy') {
+        return res.status(503).json({ error: 'Counter is busy. Try again.' });
+      }
+
+      return res.status(502).json({ error: 'Counter is temporarily unavailable.' });
     }
 
     res.setHeader('Allow', 'GET, POST');
