@@ -9,7 +9,6 @@
 }
 
 .portfolio-app main,
-.portfolio-app .site-header,
 .portfolio-app .footer {
   position: relative;
   z-index: 1;
@@ -110,6 +109,54 @@
   color: var(--text);
 }
 
+/* Active section underline (desktop). Phones have their own version further down. */
+.header-nav a {
+  position: relative;
+  padding: 6px 0;
+}
+
+.header-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--text);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.header-nav a.active::after {
+  transform: scaleX(1);
+}
+
+/* Keyboard users: jump past the header straight to the content */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 60;
+  padding: 10px 14px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+main:focus {
+  outline: none;
+}
+
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -155,6 +202,10 @@
 .side-index a.active span {
   border-color: var(--text);
   background: var(--text);
+}
+
+.side-index a em::before {
+  content: attr(data-no) ' / ';
 }
 
 .side-index a em {
@@ -218,6 +269,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  padding: 4px 0;
   color: var(--soft);
   font-size: 13px;
   transition: color 0.2s, gap 0.2s;
@@ -424,7 +476,7 @@
 }
 
 .section-meta span:first-child {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .section-heading h2,
@@ -582,6 +634,258 @@
   line-height: 1.2;
 }
 
+/* ---------- Project card (Work section) ---------- */
+.project-grid {
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid var(--text);
+}
+
+/* The screenshot sits on a quiet panel so it looks framed in both themes */
+.project-thumb {
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 2.4vw, 28px);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.project-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow);
+  transition: transform 0.5s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .project-thumb:hover {
+    border-color: var(--line-strong);
+  }
+
+  .project-thumb:hover img {
+    transform: scale(1.025);
+  }
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.project-meta span:first-child {
+  color: var(--accent-text);
+}
+
+.project-body h3 {
+  margin: 0 0 14px;
+  font-size: clamp(36px, 4.6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.project-text {
+  max-width: 32em;
+  margin: 0 0 22px;
+  color: var(--soft);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+/* ---------- Case study panel ---------- */
+.case-dialog {
+  width: min(1040px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.case-dialog::backdrop {
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.case-dialog[open] {
+  animation: case-in 0.3s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+@keyframes case-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.case-sheet {
+  padding: 0 clamp(20px, 4vw, 56px) clamp(32px, 5vw, 64px);
+}
+
+.case-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(20px, 3vw, 36px);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.case-bar-label {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.case-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: border-color 0.2s;
+}
+
+.case-close:hover {
+  border-color: var(--text);
+}
+
+.case-head h2 {
+  margin: 0 0 18px;
+  font-size: clamp(44px, 7vw, 96px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.case-lede {
+  max-width: 34em;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.2;
+}
+
+.case-head-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+.shot {
+  margin: 0;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+}
+
+.shot figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shot-main {
+  margin: clamp(28px, 4vw, 48px) 0;
+}
+
+.case-rows {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  border-top: 1px solid var(--text);
+}
+
+.case-rows .case-row:first-child {
+  padding-top: 22px;
+}
+
+.shot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .project-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .shot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .case-dialog {
+    width: 100vw;
+    max-height: 100dvh;
+    border: 0;
+  }
+}
+
 .about-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.7fr);
@@ -631,60 +935,121 @@
   line-height: 1.6;
 }
 
-.ledger {
+/* ---------- Skills ----------
+   A quiet logo grid: a small label for the category, then the logos with their
+   names underneath. No cards, no ratings. */
+.skill-groups {
   margin: 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid var(--text);
 }
 
-.ledger-row {
+.skill-group {
   display: grid;
-  grid-template-columns: 56px minmax(150px, 0.9fr) minmax(0, 1.3fr) minmax(150px, auto);
-  align-items: center;
-  gap: 24px;
-  padding: 26px 8px;
+  grid-template-columns: minmax(170px, 0.7fr) minmax(0, 2.3fr);
+  gap: 20px 40px;
+  align-items: start;
+  padding: 30px 0;
   border-bottom: 1px solid var(--line);
-  transition: background-color 0.25s, padding 0.25s;
 }
 
-.ledger-row:hover {
-  padding-left: 20px;
-  background: var(--surface);
+.skill-group h3 {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.ledger-logo {
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 24px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.skill-logo {
   display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
 }
 
-.ledger-row h3 {
+/* Every logo fits the same 40px box and keeps its own proportions */
+.skill-logo img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Black logos have a white twin for the dark theme */
+.skill-logo .on-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .skill-logo .on-dark {
+  display: block;
+}
+
+:root[data-theme='dark'] .skill-logo .on-light:not(:only-child) {
+  display: none;
+}
+
+/* ---------- Interests ---------- */
+.interest-list {
   margin: 0;
-  font-size: clamp(28px, 3.6vw, 48px);
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--text);
+}
+
+.interest-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(24px, 3.4vw, 44px);
   font-weight: 700;
-  letter-spacing: -0.05em;
-  line-height: 1;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
 }
 
-.ledger-row p {
-  margin: 0;
-  color: var(--soft);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.ledger-level {
-  justify-self: end;
-  padding: 7px 10px;
-  border: 1px solid var(--line-strong);
-  color: var(--soft);
+.interest-no {
+  color: var(--accent-text);
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 900px) {
+  .skill-group {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 700px) {
+  .skill-grid {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  }
 }
 
 .timeline {
@@ -704,7 +1069,7 @@
 
 .timeline-when {
   padding-top: 5px;
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
@@ -840,6 +1205,11 @@
   letter-spacing: 0.05em;
 }
 
+.footer a {
+  display: inline-block;
+  padding: 7px 0;
+}
+
 .footer a:hover {
   color: var(--text);
 }
@@ -848,6 +1218,13 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+/* Keep the footer links clear of the fixed battery in the bottom-right corner */
+@media (min-width: 701px) {
+  .footer-right {
+    margin-right: 150px;
+  }
 }
 
 .music-slot {
@@ -1064,162 +1441,158 @@
   to { height: 16px; }
 }
 
+/* ---------- Fuel the Build (bottom right) ----------
+   No box: the battery itself is the control. The count sits beside it and a
+   small caption sits underneath. The counter logic lives in FuelTheBuild(). */
 .build-widget {
+  --fuel-error: #c2410c;
   position: fixed;
   right: clamp(16px, 3vw, 40px);
   bottom: 22px;
   z-index: 32;
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  gap: 10px;
   transition: opacity 0.25s ease;
+}
+
+:root[data-theme='dark'] .build-widget {
+  --fuel-error: #fb923c;
 }
 
 .build-button {
   display: flex;
-  align-items: center;
-  gap: 11px;
-  max-width: 100%;
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(16px);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 4px 2px;
+  border: 0;
+  background: none;
   color: var(--text);
-  box-shadow: var(--shadow);
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  /* soft halo in the page colour keeps it readable over text without a box */
+  filter: drop-shadow(0 0 5px var(--bg)) drop-shadow(0 0 5px var(--bg)) drop-shadow(0 0 3px var(--bg)) drop-shadow(0 0 2px var(--bg));
 }
 
-.build-button:hover,
 .build-button:focus-visible {
-  transform: translateY(-2px);
-  border-color: var(--accent);
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
 }
 
-.battery-shell {
-  position: relative;
+.fuel-row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  width: 34px;
-  height: 19px;
+  gap: 10px;
+}
+
+.battery {
+  display: flex;
+  align-items: center;
   flex: 0 0 auto;
-  padding: 2px;
-  border: 1.5px solid var(--accent);
-  border-radius: 4px;
+  transition: transform 0.25s cubic-bezier(0.2, 0.75, 0.2, 1);
 }
 
-.battery-shell::after {
-  position: absolute;
-  top: 5px;
-  right: -4px;
+.battery-body {
+  display: flex;
+  gap: 2.5px;
+  width: 44px;
+  height: 21px;
+  padding: 2.5px;
+  border: 1.5px solid currentColor;
+  border-radius: 6px;
+}
+
+.battery-nub {
   width: 3px;
-  height: 7px;
+  height: 8px;
+  margin-left: 2px;
   border-radius: 0 2px 2px 0;
-  background: var(--accent);
-  content: '';
+  background: currentColor;
 }
 
-.battery-cell {
-  height: 100%;
+.battery-bar {
   flex: 1;
-  border-radius: 1px;
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  transition: background 0.2s;
+  border-radius: 2px;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  transition: background 0.25s ease;
 }
 
-.build-widget.charging .battery-cell {
+.battery-bar.on {
+  background: currentColor;
+}
+
+/* A tap: the lit bars flash the accent colour one after another */
+.build-widget.charging .battery-bar.on {
   background: var(--accent);
   animation: battery-charge 0.65s ease both;
+  animation-delay: calc(var(--i) * 0.07s);
 }
 
-.build-widget.charging .battery-cell:nth-child(2) {
-  animation-delay: 0.12s;
-}
-
-.build-widget.charging .battery-cell:nth-child(3) {
-  animation-delay: 0.24s;
-}
-
-.build-button-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.build-button-copy strong {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.build-button-copy small {
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.build-details {
-  width: min(260px, calc(100vw - 32px));
-  padding: 17px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-}
-
-.build-widget:hover .build-details,
-.build-widget:focus-within .build-details,
-.build-widget.expanded .build-details {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.build-details-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.visit-count {
-  margin: 12px 0 3px;
+.fuel-count {
+  display: inline-block;
+  min-width: 2ch;
+  overflow: hidden;
   color: var(--text);
-  font-size: 34px;
-  font-weight: 600;
-  letter-spacing: -0.06em;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  text-align: left;
+  transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.visit-caption,
-.build-message {
-  font-size: 11px;
-  line-height: 1.65;
+.fuel-num {
+  display: block;
+  animation: fuel-roll 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.visit-caption {
-  margin: 0;
+.fuel-caption {
   color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.2s ease;
 }
 
-.build-message {
-  margin: 12px 0 0;
-  padding-top: 11px;
-  border-top: 1px solid var(--line);
-  color: var(--soft);
+@media (hover: hover) {
+  .build-button:hover .battery {
+    transform: translateY(-2px) scale(1.04);
+  }
+
+  .build-button:hover .fuel-caption {
+    color: var(--text);
+  }
+}
+
+.build-button:active .battery {
+  transform: scale(0.94);
+}
+
+.build-widget.is-saving .fuel-count {
+  opacity: 0.5;
+}
+
+.build-widget.is-error .battery {
+  color: var(--fuel-error);
+}
+
+.build-widget.is-error .fuel-count {
+  color: var(--fuel-error);
+  animation: fuel-shake 0.4s ease;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @keyframes battery-charge {
@@ -1234,24 +1607,46 @@
   }
 }
 
+@keyframes fuel-roll {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fuel-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+@media (max-width: 700px) {
+  .battery-body {
+    width: 38px;
+    height: 19px;
+  }
+
+  /* On phones the caption would sit on top of page text, so only the battery
+     and count show. The button's aria-label still says everything. */
+  .fuel-caption {
+    display: none;
+  }
+
+  /* a roomier touch area; the drawing itself stays the same size */
+  .build-button {
+    padding: 8px 6px;
+  }
+}
+
 @media (max-width: 1050px) {
   .side-index {
     display: none;
   }
 
-  .ledger-row {
-    grid-template-columns: 52px minmax(0, 1fr) auto;
-  }
-
-  .ledger-row p {
-    grid-column: 2 / 4;
-    grid-row: 2;
-  }
-
-  .ledger-level {
-    grid-column: 3;
-    grid-row: 1;
-  }
 }
 
 @media (max-width: 900px) {
@@ -1307,21 +1702,6 @@
     gap: 6px;
   }
 
-  .ledger-row {
-    gap: 12px 16px;
-    padding: 20px 0;
-  }
-
-  .ledger-row:hover {
-    padding-left: 0;
-  }
-
-  .ledger-level {
-    font-size: 9px;
-    white-space: normal;
-    text-align: right;
-  }
-
   .music-slot {
     bottom: 12px;
     left: 12px;
@@ -1353,18 +1733,6 @@
   .build-widget {
     right: 12px;
     bottom: 12px;
-  }
-
-  .build-button-copy {
-    display: none;
-  }
-
-  .build-button {
-    padding: 8px;
-  }
-
-  .build-details {
-    width: min(250px, calc(100vw - 24px));
   }
 
   
@@ -1440,7 +1808,7 @@
   .header-nav {
     order: 3;
     display: flex;
-    flex: 0 0 100%;
+    flex: 0 0 calc(100% + var(--g) * 2);
     justify-content: space-between;
     gap: 18px;
     margin: 0 calc(var(--g) * -1);
@@ -1651,46 +2019,6 @@
   }
 
   
-  .ledger-row {
-    grid-template-columns: 44px minmax(0, 1fr);
-    align-items: start;
-    gap: 4px 14px;
-    padding: 20px 0;
-  }
-
-  .ledger-row:hover {
-    padding-left: 0;
-    background: transparent;
-  }
-
-  .ledger-logo {
-    grid-row: 1 / span 3;
-    align-self: start;
-    width: 44px;
-    height: 44px;
-  }
-
-  .ledger-row h3 {
-    grid-column: 2;
-    grid-row: 1;
-    font-size: 30px;
-  }
-
-  .ledger-row p {
-    grid-column: 2;
-    grid-row: 2;
-    font-size: 14.5px;
-  }
-
-  .ledger-level {
-    grid-column: 2;
-    grid-row: 3;
-    justify-self: start;
-    margin-top: 8px;
-    font-size: 9.5px;
-    text-align: left;
-  }
-
   
   .timeline li {
     padding: 20px 0;
@@ -1735,7 +2063,7 @@
 
   .contact-email {
     margin: 24px 0 16px;
-    font-size: clamp(18px, 5.8vw, 26px);
+    font-size: clamp(14px, 4.7vw, 26px);
   }
 
   .contact p {
@@ -1773,7 +2101,7 @@
 
   
   .range-input {
-    height: 22px;
+    height: 24px;
     background:
       linear-gradient(
         to right,
@@ -1827,101 +2155,7 @@
     display: none;
   }
 
-  .ledger-row h3 {
-    font-size: 26px;
-  }
-
   .header-nav {
     gap: 12px;
   }
-}
-
-.build-widget {
-  --fuel-error: #c2410c;
-}
-
-:root[data-theme='dark'] .build-widget {
-  --fuel-error: #fb923c;
-}
-
-.build-button {
-  gap: 10px;
-  min-height: 40px;
-  padding: 9px 14px 9px 12px;
-}
-
-.fuel-bolt {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  line-height: 1;
-  pointer-events: none;
-}
-
-.fuel-count {
-  display: inline-block;
-  min-width: 2ch;
-  overflow: hidden;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  text-align: left;
-  transition: opacity 0.2s ease, color 0.2s ease;
-}
-
-.fuel-num {
-  display: block;
-  animation: fuel-roll 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.build-widget.is-saving .fuel-count {
-  opacity: 0.5;
-}
-
-.build-widget.is-error .battery-shell {
-  border-color: var(--fuel-error);
-}
-
-.build-widget.is-error .battery-shell::after {
-  background: var(--fuel-error);
-}
-
-.build-widget.is-error .fuel-count {
-  color: var(--fuel-error);
-  animation: fuel-shake 0.4s ease;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-@keyframes fuel-roll {
-  from {
-    opacity: 0;
-    transform: translateY(70%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fuel-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
 }

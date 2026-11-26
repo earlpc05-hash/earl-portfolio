@@ -1,8 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
-const EMAIL = 'earlpersonal16@gmail.com';
+const EMAIL = 'earlkennethpanuncial@gmail.com';
 const GITHUB = 'https://github.com/earlpc05-hash';
+const INSTAGRAM = 'https://www.instagram.com/erl_kk';
 
 
 const PHOTO_SRC = '/earl.jpg';
@@ -73,6 +74,32 @@ const BYTEBOND = {
 
   decisions: [],
 
+  category: 'Collaborative project',
+
+  shots: [
+    {
+      src: '/images/bytebond/home.webp',
+      width: 1600,
+      height: 790,
+      alt: 'ByteBond home page with the headline “Connecting Ideas. Building Together.” and the ByteBond logo',
+      caption: 'Home page on desktop',
+    },
+    {
+      src: '/images/bytebond/projects.webp',
+      width: 1600,
+      height: 797,
+      alt: 'ByteBond Projects and Activities page showing a grid of project cards',
+      caption: 'Projects and activities page',
+    },
+    {
+      src: '/images/bytebond/mobile.webp',
+      width: 644,
+      height: 856,
+      alt: 'ByteBond home page on a phone screen',
+      caption: 'Layout on a phone',
+    },
+  ],
+
   challenge: 'This was our first web development project as a group. We had to learn how to collaborate effectively, divide responsibilities, and use GitHub for version control.',
 
   status: 'Live on Vercel. This was my first major collaborative web development project, created during my second year as a BSIT student.',
@@ -81,22 +108,84 @@ const BYTEBOND = {
   repo: 'https://github.com/earlpc05-hash/Bytebond',
 };
 
-const SKILLS = [
-  { name: 'HTML', detail: 'Page structure and semantic markup.', level: 'Used in projects', logo: 'html' },
-  { name: 'CSS', detail: 'Layouts, styling, and responsive design.', level: 'Used in projects', logo: 'css' },
-  { name: 'JavaScript', detail: 'Interaction and programming fundamentals.', level: 'Used in projects', logo: 'js' },
-  { name: 'Python', detail: 'Programming fundamentals and problem solving.', level: 'Used in projects', logo: 'python' },
-  { name: 'React', detail: 'Components, props, and state. This site is built with it.', level: 'Learning the fundamentals', logo: 'react' },
+// Skills, grouped by what they are. No ratings or percentages.
+// file = name of the logo in public/images/skills (without .svg)
+// dark = true when that logo also has a white "-on-dark" version
+const SKILL_GROUPS = [
+  {
+    title: 'Programming languages',
+    items: [
+      { name: 'HTML5', file: 'html5' },
+      { name: 'CSS3', file: 'css3' },
+      { name: 'JavaScript', file: 'javascript' },
+      { name: 'Python', file: 'python' },
+      { name: 'Java', file: 'java' },
+    ],
+  },
+  {
+    title: 'Frameworks and styling',
+    items: [
+      { name: 'React', file: 'react' },
+      { name: 'Tailwind CSS', file: 'tailwind' },
+    ],
+  },
+  {
+    title: 'Development tools',
+    items: [
+      { name: 'Visual Studio Code', file: 'vscode' },
+      { name: 'Node.js', file: 'nodejs' },
+      { name: 'npm', file: 'npm' },
+      { name: 'Vite', file: 'vite' },
+    ],
+  },
+  {
+    title: 'Version control and hosting',
+    items: [
+      { name: 'Git', file: 'git' },
+      { name: 'GitHub', file: 'github', dark: true },
+      { name: 'Vercel', file: 'vercel', dark: true },
+    ],
+  },
+  {
+    title: 'Design and creative',
+    items: [
+      { name: 'AutoCAD', file: 'autocad' },
+      { name: 'Canva', file: 'canva' },
+      { name: 'CapCut', file: 'capcut', dark: true },
+    ],
+  },
+  {
+    title: 'AI tools',
+    items: [{ name: 'Claude', file: 'claude' }],
+  },
+  {
+    title: 'Productivity',
+    items: [
+      { name: 'Word', file: 'word' },
+      { name: 'Excel', file: 'excel' },
+      { name: 'PowerPoint', file: 'powerpoint' },
+    ],
+  },
+];
+
+// Things I'm into. Add a line here whenever there is something new.
+const INTERESTS = [
+  'Computers',
+  'Programming',
+  'Web design',
+  'Technology',
+  'Creative work: design and video',
 ];
 
 const ACHIEVEMENTS = [];
 
 const NAV = [
-  ['home', 'Intro'],
+  ['home', 'Home'],
   ['work', 'Work'],
   ['about', 'About'],
   ['skills', 'Skills'],
   ['achievements', 'Achievements'],
+  ['interests', 'Interests'],
   ['resume', 'Résumé'],
   ['contact', 'Contact'],
 ];
@@ -125,6 +214,7 @@ function Icon({ name, size = 18 }) {
     next: <><path d="m5 5 10 7-10 7z" fill="currentColor" stroke="none" /><path d="M19 5v14" /></>,
     previous: <><path d="m19 5-10 7 10 7z" fill="currentColor" stroke="none" /><path d="M5 5v14" /></>,
     music: <><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></>,
+    instagram: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.4" cy="6.6" r="0.7" fill="currentColor" stroke="none" /></>,
     mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
     check: <path d="m5 12 4 4L19 6" />,
     download: <><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></>,
@@ -135,54 +225,18 @@ function Icon({ name, size = 18 }) {
   return <svg {...common}>{paths[name] || null}</svg>;
 }
 
-function TechLogo({ name }) {
-  const props = { width: 34, height: 34, viewBox: '0 0 32 32', 'aria-hidden': true };
-
-  if (name === 'html') {
-    return (
-      <svg {...props}>
-        <path d="M5 3h22l-2 22.5L16 29l-9-3.5z" fill="#e44d26" />
-        <path d="M16 5.5v21.7l7.3-2.4L25 5.5z" fill="#f16529" />
-        <path d="M10 10h12l-.3 3.2H13.4l.2 3h7.8l-.6 6.4-4.8 1.4-4.8-1.4-.3-3.6h3.1l.2 1.8 1.8.5 1.8-.5.2-2.4h-7.4z" fill="#fff" />
-      </svg>
-    );
-  }
-  if (name === 'css') {
-    return (
-      <svg {...props}>
-        <path d="M5 3h22l-2 22.5L16 29l-9-3.5z" fill="#1572b6" />
-        <path d="M16 5.5v21.7l7.3-2.4L25 5.5z" fill="#33a9dc" />
-        <path d="M22 10H10l.3 3.2h8.3l-.2 2.6H10.6l.3 3.2h7.2l-.2 2.4-2 .6-2-.6-.1-1.6H9.7l.3 3.7 6 1.7 5.8-1.7.8-9z" fill="#fff" />
-      </svg>
-    );
-  }
-  if (name === 'js') {
-    return (
-      <svg {...props}>
-        <rect x="3" y="3" width="26" height="26" rx="2" fill="#f7df1e" />
-        <text x="16" y="25" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="700" fontSize="14" fill="#111">JS</text>
-      </svg>
-    );
-  }
-  if (name === 'python') {
-    return (
-      <svg {...props}>
-        <rect x="4" y="3" width="15" height="15" rx="6" fill="#3776ab" />
-        <rect x="13" y="14" width="15" height="15" rx="6" fill="#ffd43b" />
-        <circle cx="10" cy="8" r="1.4" fill="#fff" />
-        <circle cx="22" cy="24" r="1.4" fill="#3776ab" />
-      </svg>
-    );
-  }
+// One official logo per tool, stored as an SVG file in public/images/skills.
+// Black logos (GitHub, Vercel, CapCut) have a white "-on-dark.svg" twin that the
+// CSS swaps in for the dark theme. Every logo is drawn at its own proportions.
+function SkillLogo({ file, hasDarkVariant }) {
+  const base = `/images/skills/${file}`;
   return (
-    <svg {...props}>
-      <g fill="none" stroke="#61dafb" strokeWidth="1.6">
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.8" />
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.8" transform="rotate(60 16 16)" />
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.8" transform="rotate(120 16 16)" />
-      </g>
-      <circle cx="16" cy="16" r="2.3" fill="#61dafb" />
-    </svg>
+    <span className="skill-logo" aria-hidden="true">
+      <img className="on-light" src={`${base}.svg`} alt="" width="40" height="40" loading="lazy" decoding="async" />
+      {hasDarkVariant && (
+        <img className="on-dark" src={`${base}-on-dark.svg`} alt="" width="40" height="40" loading="lazy" decoding="async" />
+      )}
+    </span>
   );
 }
 
@@ -461,12 +515,16 @@ function useCountTo(target) {
   return shown;
 }
 
+// How many bars the battery has. It only affects how the icon looks.
+const BATTERY_BARS = 5;
+
 function FuelTheBuild() {
   const [count, setCount] = useState(null); // total confirmed by the server
   const [unavailable, setUnavailable] = useState(false); // the first load failed
   const [charging, setCharging] = useState(false); // battery animation
   const [saving, setSaving] = useState(0); // taps still waiting for the server
   const [failed, setFailed] = useState(false); // the last tap was not saved
+  const [level, setLevel] = useState(1); // battery bars lit: starts low, fills as you tap
   const lastTapRef = useRef(0);
   const shown = useCountTo(count);
 
@@ -530,6 +588,7 @@ function FuelTheBuild() {
       
       const saved = response.ok && Number.isFinite(total);
       if (!saved && response.status !== 429) throw new Error('Tap was not saved');
+      if (saved) setLevel((current) => Math.min(BATTERY_BARS, current + 1));
     } catch {
       setFailed(true);
     } finally {
@@ -547,27 +606,118 @@ function FuelTheBuild() {
       <button
         className="build-button"
         onClick={handleTap}
-        aria-label={
-          count === null
-            ? 'Fuel the Build. Tap the battery to add one.'
-            : `Fuel the Build. ${count.toLocaleString()} taps so far. Tap the battery to add one.`
-        }
+        aria-label={`${count === null ? '' : `${label} `}Fuel the Build · Tap to recharge`}
       >
-        <span className="battery-shell" aria-hidden="true">
-          <i className="battery-cell" />
-          <i className="battery-cell" />
-          <i className="battery-cell" />
-          <span className="fuel-bolt">⚡</span>
+        <span className="fuel-row" aria-hidden="true">
+          <span className="battery">
+            <span className="battery-body">
+              {Array.from({ length: BATTERY_BARS }, (_, index) => (
+                <i
+                  key={index}
+                  className={`battery-bar ${index < level ? 'on' : ''}`}
+                  style={{ '--i': index }}
+                />
+              ))}
+            </span>
+            <span className="battery-nub" />
+          </span>
+          <span className="fuel-count">
+            <span className="fuel-num" key={count}>{label}</span>
+          </span>
         </span>
-        <span className="fuel-count" aria-hidden="true">
-          <span className="fuel-num" key={count}>{label}</span>
-        </span>
+        <span className="fuel-caption" aria-hidden="true">Fuel the Build · Tap to recharge</span>
       </button>
       <span className="sr-only" role="status" aria-live="polite">{status}</span>
     </div>
   );
 }
 
+
+// Case study panel. It uses the browser's built-in <dialog>, which already
+// handles Escape, keeps keyboard focus inside, and returns focus to the button
+// that opened it.
+function CaseStudy({ open, onClose, rows }) {
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return undefined;
+
+    if (open && !dialog.open) dialog.showModal();
+    if (!open && dialog.open) dialog.close();
+
+    // Stop the page behind the panel from scrolling while it is open
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const [mainShot, ...otherShots] = BYTEBOND.shots;
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="case-dialog"
+      aria-labelledby="case-title"
+      onClose={onClose}
+      onClick={(event) => {
+        // A click on the dark area outside the panel closes it
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className="case-sheet">
+        <div className="case-bar">
+          <span className="case-bar-label">Case study</span>
+          <button type="button" className="case-close" onClick={onClose}>
+            Close <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+
+        <div className="case-head">
+          <p className="project-meta">
+            <span>{BYTEBOND.category}</span>
+            <span>Live on Vercel</span>
+          </p>
+          <h2 id="case-title">{BYTEBOND.name}</h2>
+          <p className="case-lede">{BYTEBOND.summary}</p>
+          <div className="case-head-links">
+            {BYTEBOND.demo && (
+              <a className="btn-solid" href={BYTEBOND.demo} target="_blank" rel="noreferrer">
+                Live demo <Icon name="external" size={14} />
+              </a>
+            )}
+            {BYTEBOND.repo && (
+              <a className="text-link" href={BYTEBOND.repo} target="_blank" rel="noreferrer">
+                GitHub repository <Icon name="github" size={14} />
+              </a>
+            )}
+          </div>
+        </div>
+
+        <figure className="shot shot-main">
+          <img src={mainShot.src} width={mainShot.width} height={mainShot.height} alt={mainShot.alt} decoding="async" />
+          <figcaption>{mainShot.caption}</figcaption>
+        </figure>
+
+        <dl className="case-rows">
+          {rows.map(([label, kind, value]) => (
+            <CaseRow key={label} label={label} kind={kind} value={value} />
+          ))}
+        </dl>
+
+        <div className="shot-grid">
+          {otherShots.map((shot) => (
+            <figure className="shot" key={shot.src}>
+              <img src={shot.src} width={shot.width} height={shot.height} alt={shot.alt} loading="lazy" decoding="async" />
+              <figcaption>{shot.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </dialog>
+  );
+}
 
 export default function App() {
   const lightRef = useRef(null);
@@ -583,6 +733,7 @@ export default function App() {
   const [playerOpen, setPlayerOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [copyState, setCopyState] = useState('idle');
+  const [caseOpen, setCaseOpen] = useState(false);
 
   // Theme
   useLayoutEffect(() => {
@@ -610,7 +761,32 @@ export default function App() {
       if (element) observer.observe(element);
     });
 
-    return () => observer.disconnect();
+    // Contact is shorter than the screen, so it can never reach the observer's
+    // "active" zone. At the very bottom of the page we mark it active by hand,
+    // and when the visitor scrolls back up we work out the active section again.
+    const pickActive = () => {
+      const line = window.innerHeight * 0.35;
+      let current = NAV[0][0];
+      NAV.forEach(([id]) => {
+        const element = document.getElementById(id);
+        if (element && element.getBoundingClientRect().top <= line) current = id;
+      });
+      return current;
+    };
+
+    let wasAtBottom = false;
+    const onScroll = () => {
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) setActiveSection('contact');
+      else if (wasAtBottom) setActiveSection(pickActive());
+      wasAtBottom = atBottom;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -691,13 +867,13 @@ export default function App() {
   }
 
   const caseRows = [
-    ['What it is', 'text', BYTEBOND.summary],
-    ['Why I made it', 'text', BYTEBOND.why],
+    ['Overview', 'text', BYTEBOND.summary],
+    ['Purpose and goal', 'text', BYTEBOND.why],
     ['My role', 'text', BYTEBOND.role],
     ['What I did', 'list', BYTEBOND.contributions],
     ['Built with', 'tags', BYTEBOND.stack],
     ['Technical decisions', 'list', BYTEBOND.decisions],
-    ['A problem I hit', 'text', BYTEBOND.challenge],
+    ['A challenge', 'text', BYTEBOND.challenge],
     ['Where it stands', 'text', BYTEBOND.status],
   ].filter(([, kind, value]) => (kind === 'text' ? Boolean(value) : value.length > 0));
 
@@ -706,20 +882,24 @@ export default function App() {
 
   return (
     <div className={`portfolio-app ${playerOpen ? 'player-open' : ''}`}>
+      <a className="skip-link" href="#main">Skip to content</a>
+
       <div className="cursor-light" ref={lightRef} aria-hidden="true" />
 
       <header className="site-header">
-        <a className="brand" href="#home" aria-label="Earl Panuncial, back to top">
+        <a className="brand" href="#home">
           <span className="brand-mark">EP</span>
           <span className="brand-name">Earl Panuncial</span>
+          <span className="sr-only">, back to top</span>
         </a>
 
         <div className="header-right">
           <nav className="header-nav" aria-label="Main navigation">
-            <a className={activeSection === 'work' ? 'active' : ''} href="#work">Work</a>
-            <a className={activeSection === 'about' ? 'active' : ''} href="#about">About</a>
-            <a className={activeSection === 'skills' ? 'active' : ''} href="#skills">Skills</a>
-            <a className={activeSection === 'contact' ? 'active' : ''} href="#contact">Contact</a>
+            <a className={activeSection === 'home' ? 'active' : ''} href="#home" aria-current={activeSection === 'home' ? 'true' : undefined}>Home</a>
+            <a className={activeSection === 'work' ? 'active' : ''} href="#work" aria-current={activeSection === 'work' ? 'true' : undefined}>Work</a>
+            <a className={activeSection === 'about' ? 'active' : ''} href="#about" aria-current={activeSection === 'about' ? 'true' : undefined}>About</a>
+            <a className={activeSection === 'skills' ? 'active' : ''} href="#skills" aria-current={activeSection === 'skills' ? 'true' : undefined}>Skills</a>
+            <a className={activeSection === 'contact' ? 'active' : ''} href="#contact" aria-current={activeSection === 'contact' ? 'true' : undefined}>Contact</a>
           </nav>
 
           <button
@@ -735,14 +915,14 @@ export default function App() {
 
       <nav className="side-index" aria-label="Section index">
         {NAV.map(([id, label], index) => (
-          <a key={id} className={activeSection === id ? 'active' : ''} href={`#${id}`} aria-label={label}>
-            <em>{String(index + 1).padStart(2, '0')} / {label}</em>
+          <a key={id} className={activeSection === id ? 'active' : ''} href={`#${id}`} aria-label={label} aria-current={activeSection === id ? 'true' : undefined}>
+            <em data-no={String(index + 1).padStart(2, '0')}>{label}</em>
             <span />
           </a>
         ))}
       </nav>
 
-      <main>
+      <main id="main" tabIndex={-1}>
         {/* ---------------- INTRO ---------------- */}
         <section id="home" className="hero">
           <svg className="hero-curves" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -754,7 +934,7 @@ export default function App() {
 
           <div className="hero-copy">
             <p className="eyebrow">
-              <span className="live-dot" /> Aspiring web developer <span>·</span> BSIT student
+              <span className="live-dot" /> BSIT student <span>·</span> Personal IT portfolio
             </p>
 
             <h1>
@@ -763,13 +943,13 @@ export default function App() {
               <span>Panuncial.</span>
             </h1>
 
-            <p className="hero-lead">An aspiring web developer and BSIT student.</p>
+            <p className="hero-lead">I build websites, and I care how they feel to use.</p>
 
             <p className="hero-support">
-              Exploring web development through code, creativity, and continuous learning.
+              I’m a second-year BSIT student working with HTML, CSS, JavaScript, Python and React.
             </p>
             <p className="hero-detail">
-              I’m developing my programming and web development skills, with an interest in creative problem-solving and thoughtful design.
+              I pay attention to first impressions, error states, and the small details that make a page easier to use.
             </p>
 
             <div className="hero-actions">
@@ -778,7 +958,7 @@ export default function App() {
             </div>
 
             <p className="hero-looking">
-              <span>Looking for</span> Web development internships
+              <span>Currently</span> BS Information Technology, second year
             </p>
           </div>
 
@@ -791,39 +971,50 @@ export default function App() {
             Selected <em>work</em>
           </SectionHeading>
 
-          <article className="case" data-reveal>
-            <aside className="case-side">
-              <span className="case-no">01</span>
-              <h3>{BYTEBOND.name}</h3>
-              <p className="case-kind">Featured project</p>
-              <div className="case-links">
-                {BYTEBOND.demo && (
-                  <a href={BYTEBOND.demo} target="_blank" rel="noreferrer">
+          <ul className="project-grid">
+            <li className="project-card" data-reveal>
+              <button
+                type="button"
+                className="project-thumb"
+                onClick={() => setCaseOpen(true)}
+                aria-label={`Open the ${BYTEBOND.name} case study`}
+              >
+                <img
+                  src={BYTEBOND.shots[0].src}
+                  width={BYTEBOND.shots[0].width}
+                  height={BYTEBOND.shots[0].height}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </button>
+
+              <div className="project-body">
+                <p className="project-meta">
+                  <span>01</span>
+                  <span>{BYTEBOND.category}</span>
+                  <span>Live</span>
+                </p>
+                <h3>{BYTEBOND.name}</h3>
+                <p className="project-text">{BYTEBOND.summary}</p>
+                <div className="tag-list">
+                  {BYTEBOND.stack.map((item) => <span className="tag" key={item}>{item}</span>)}
+                </div>
+                <div className="project-actions">
+                  <button type="button" className="btn-solid" onClick={() => setCaseOpen(true)}>
+                    Read case study <Icon name="arrow" size={15} />
+                  </button>
+                  <a className="text-link" href={BYTEBOND.demo} target="_blank" rel="noreferrer">
                     Live demo <Icon name="external" size={13} />
                   </a>
-                )}
-                <a href={BYTEBOND.repo || GITHUB} target="_blank" rel="noreferrer">
-                  {BYTEBOND.repo ? 'Repository' : 'GitHub profile'} <Icon name="github" size={13} />
-                </a>
+                </div>
               </div>
-            </aside>
+            </li>
+          </ul>
 
-            <div className="case-main">
-              {caseRows.length > 0 ? (
-                <dl>
-                  {caseRows.map(([label, kind, value]) => (
-                    <CaseRow key={label} label={label} kind={kind} value={value} />
-                  ))}
-                </dl>
-              ) : (
-                <p className="case-empty">
-                  I’m still writing up this case study. It will cover what ByteBond is, what I built, and what went wrong along the way.
-                </p>
-              )}
-            </div>
-          </article>
+          <CaseStudy open={caseOpen} onClose={() => setCaseOpen(false)} rows={caseRows} />
 
-          <p className="section-note">More projects will be added here once they’re finished and I can explain them properly.</p>
+          <p className="section-note">Personal, school and experimental projects will be added here as I build them.</p>
         </section>
 
         {/* ---------------- ABOUT ---------------- */}
@@ -835,23 +1026,25 @@ export default function App() {
           <div className="about-layout">
             <div className="about-copy" data-reveal>
               <p className="about-lead">
-                I’m a second-year BSIT student, and I’m looking for a web development internship.
+                I’m a second-year BSIT student who likes building websites and paying attention to how they feel to use.
               </p>
               <p>
-                A lot of what I care about in a website happens in the first few seconds: does someone understand where they are, what they can do, and what to click next? I try to build with that person in mind, not just the screen in front of me.
+                I’m interested in computers, programming, web design and technology in general. I write HTML, CSS, JavaScript, Python and Java, and I build interfaces with React and Tailwind CSS. I like to make something, look at it critically, and improve it over a few tries.
               </p>
               <p>
-                I also pay attention to the parts that are easy to skip. What the page does when something fails. Whether a button tells you anything when you press it. Whether a task takes more effort than it should.
+                I care about reducing friction for the person using a website. A lot of that happens in the first few seconds: can someone tell where they are, what they can do, and what to click next? I also look at the details that are easy to skip, like what a page does when something fails, or whether a button tells you anything when you press it.
               </p>
               <p>
-                I’m still learning, and I’d rather show you what I can do today than pretend to be further along. This site is one example: the theme switch, the music player, and the battery in the corner are all written without a UI library.
+                There’s a creative side to what I do as well. I use AutoCAD for 2D and 3D work, Canva for design and CapCut for video editing.
+              </p>
+              <p>
+                This site is a fair example of how I work: the theme switch, the music player and the battery in the corner are all written without a UI library.
               </p>
             </div>
 
             <dl className="about-facts" data-reveal>
               <div><dt>Studying</dt><dd>BS Information Technology, second year</dd></div>
-              <div><dt>Looking for</dt><dd>Web development internships, then junior web developer roles</dd></div>
-              <div><dt>Learning now</dt><dd>React fundamentals</dd></div>
+              <div><dt>Interested in</dt><dd>Computers, programming, web design and technology</dd></div>
               <div><dt>Pays attention to</dt><dd>First impressions, error states, and how interactions feel</dd></div>
             </dl>
           </div>
@@ -860,21 +1053,24 @@ export default function App() {
         {/* ---------------- SKILLS ---------------- */}
         <section id="skills" className="section">
           <SectionHeading index="03" eyebrow="Skills">
-            What I <em>use</em>
+            What I <em>know</em>
           </SectionHeading>
 
-          <ul className="ledger" data-reveal>
-            {SKILLS.map((skill) => (
-              <li className="ledger-row" key={skill.name}>
-                <span className="ledger-logo"><TechLogo name={skill.logo} /></span>
-                <h3>{skill.name}</h3>
-                <p>{skill.detail}</p>
-                <span className="ledger-level">{skill.level}</span>
+          <ul className="skill-groups" data-reveal>
+            {SKILL_GROUPS.map((group) => (
+              <li className="skill-group" key={group.title}>
+                <h3>{group.title}</h3>
+                <ul className="skill-grid">
+                  {group.items.map((item) => (
+                    <li className="skill-item" key={item.name}>
+                      <SkillLogo file={item.file} hasDarkVariant={item.dark} />
+                      <span>{item.name}</span>
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>
-
-          <p className="section-note">No percentage bars. These labels say how I actually use each one right now.</p>
         </section>
 
         {/* ---------------- ACHIEVEMENTS ---------------- */}
@@ -888,7 +1084,7 @@ export default function App() {
               <span className="timeline-when">Now</span>
               <div>
                 <h3>BS Information Technology</h3>
-                <p>Second year. Coursework plus practice in web development and programming.</p>
+                <p>Second year. Coursework, plus projects in web development, programming and design tools.</p>
               </div>
             </li>
             {ACHIEVEMENTS.map((item) => (
@@ -908,32 +1104,43 @@ export default function App() {
           </ol>
 
           {ACHIEVEMENTS.length === 0 && (
-            <p className="section-note">No certificates yet. I’ll add them here when I have real ones to show.</p>
+            <p className="section-note">No certificates or achievements to list yet. They’ll be added here when I have real ones to show.</p>
           )}
+        </section>
+
+        {/* ---------------- INTERESTS ---------------- */}
+        <section id="interests" className="section">
+          <SectionHeading index="05" eyebrow="Interests">
+            Things I’m <em>into</em>
+          </SectionHeading>
+
+          <ol className="interest-list" data-reveal>
+            {INTERESTS.map((item, index) => (
+              <li key={item}>
+                <span className="interest-no">{String(index + 1).padStart(2, '0')}</span>
+                {item}
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* ---------------- RÉSUMÉ ---------------- */}
         <section id="resume" className="section resume">
           <div className="resume-row" data-reveal>
             <div>
-              <div className="section-meta"><span>05</span><span>Résumé</span></div>
+              <div className="section-meta"><span>06</span><span>Résumé</span></div>
               <h2>Résumé</h2>
             </div>
             <div className="resume-side">
               {RESUME_URL ? (
                 <>
-                  <p>The same information as this page, on one sheet.</p>
+                  <p>A one-page summary of what’s on this site.</p>
                   <a className="btn-solid" href={RESUME_URL} download>
                     Download PDF <Icon name="download" size={15} />
                   </a>
                 </>
               ) : (
-                <>
-                  <p>I’m still finalizing my résumé, so there’s nothing to download yet. It will appear here as a PDF.</p>
-                  <a className="text-link" href={`mailto:${EMAIL}`}>
-                    Email me in the meantime <Icon name="arrow" size={14} />
-                  </a>
-                </>
+                <p>A one-page summary of this site will be available here as a PDF once it’s ready.</p>
               )}
             </div>
           </div>
@@ -942,13 +1149,13 @@ export default function App() {
         {/* ---------------- CONTACT ---------------- */}
         <section id="contact" className="contact">
           <div className="contact-inner" data-reveal>
-            <div className="section-meta"><span>06</span><span>Contact</span></div>
+            <div className="section-meta"><span>07</span><span>Contact</span></div>
             <h2>
               Write to <em>me.</em>
             </h2>
             <a className="contact-email" href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <p>
-              If you’re hiring interns, or want to talk about something I’ve built, email is the fastest way to reach me.
+              If you’d like to talk about something I’ve built, or just say hi, email is the fastest way to reach me.
             </p>
             <div className="contact-actions">
               <a className="btn-inverse" href={`mailto:${EMAIL}`}>
@@ -959,6 +1166,9 @@ export default function App() {
               </button>
               <a className="btn-ghost" href={GITHUB} target="_blank" rel="noreferrer">
                 GitHub <Icon name="external" size={14} />
+              </a>
+              <a className="btn-ghost" href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="Instagram profile, erl_kk (opens in a new tab)">
+                Instagram <Icon name="instagram" size={15} />
               </a>
             </div>
           </div>
@@ -974,13 +1184,13 @@ export default function App() {
       </footer>
 
       {/* Music capsule (bottom left) */}
-      <div className="music-slot">
+      <aside className="music-slot" aria-label="Music">
         <MusicPlayer
           open={playerOpen}
           onToggle={() => setPlayerOpen((open) => !open)}
           onClose={() => setPlayerOpen(false)}
         />
-      </div>
+      </aside>
 
       {/* Fuel the Build battery (bottom right), kept separate from the music player */}
       <FuelTheBuild />

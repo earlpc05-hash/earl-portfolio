@@ -18,6 +18,7 @@
   --line: rgba(13, 13, 13, 0.13);
   --line-strong: rgba(13, 13, 13, 0.3);
   --accent: #0e8f99;
+  --accent-text: #0a7b84; /* darker teal for small text: 4.6:1 on the light background */
   --accent-ink: #ffffff;
   --shadow: 0 18px 60px rgba(13, 13, 13, 0.12);
 
@@ -40,6 +41,7 @@
   --line: rgba(242, 242, 238, 0.13);
   --line-strong: rgba(242, 242, 238, 0.3);
   --accent: #67e8f9;
+  --accent-text: #67e8f9;
   --accent-ink: #04151a;
   --shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
 

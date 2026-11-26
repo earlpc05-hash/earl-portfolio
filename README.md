@@ -2,7 +2,7 @@
 
 A personal portfolio website built with React and Vite.
 
-This portfolio showcases my background, technical skills, projects, and development journey as a BSIT student aspiring to become a web developer.
+This is my personal IT portfolio: who I am, what I can do, and the projects I have built.
 
 ## Tech Stack
 

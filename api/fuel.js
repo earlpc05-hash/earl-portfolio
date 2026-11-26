@@ -1,20 +1,3 @@
-/* global process */
-// Vercel serverless function: shared "Fuel the Build" battery tap counter.
-//   GET  /api/fuel  -> { count }            (read the shared total)
-//   POST /api/fuel  -> { count }            (add exactly one tap)
-//
-// The total lives in cell B1 of a Google Sheet. A Google Apps Script web app
-// reads and updates it. This file is the only thing that talks to that script,
-// so the script's address and secret never reach the browser.
-//
-// Environment variables (set in Vercel, and in .env.local for local testing):
-//   GOOGLE_SHEET_WEBAPP_URL  the Web App URL that ends in /exec
-//   GOOGLE_SHEET_SECRET      the same secret text that is inside the script
-//
-// Every error reply carries a short "code" so you can see WHAT failed
-// (never any secret): not_configured, google_unreachable, google_not_json,
-// google_unauthorized, sheet_error, busy, unexpected.
-
 import { createHash } from 'node:crypto';
 
 const TIMEOUT_MS = 8000;
@@ -26,8 +9,6 @@ function getConfig() {
   return { url, secret };
 }
 
-// A scrambled ID for the visitor, used only for the "one tap per 0.4s" check.
-// The real IP address is never sent to Google or stored anywhere.
 function getClientId(req, secret) {
   const forwarded = req.headers['x-forwarded-for'];
   const first = Array.isArray(forwarded) ? forwarded[0] : forwarded;
@@ -67,10 +48,9 @@ function isCount(value) {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0;
 }
 
-// Turn an error message from the Apps Script into a short code
 function scriptErrorCode(error) {
-  if (error === 'unauthorized') return 'google_unauthorized'; // secret does not match
-  if (error === 'server_error') return 'sheet_error'; // tab "Counter" or cell B1 problem
+  if (error === 'unauthorized') return 'google_unauthorized'; 
+  if (error === 'server_error') return 'sheet_error'; 
   if (error === 'busy') return 'busy';
   return 'unexpected';
 }
@@ -102,12 +82,12 @@ export default async function handler(req, res) {
         body: JSON.stringify({ secret: config.secret, client: getClientId(req, config.secret) }),
       });
 
-      // A real tap: the script returns the new total
+
       if (isCount(data?.count) && !data.error) {
         return res.status(200).json({ count: data.count });
       }
 
-      // Tapped again too quickly: not counted, but the total is still valid
+    
       if (data?.error === 'too_fast' && isCount(data.count)) {
         return res.status(429).json({ error: 'Too many taps.', code: 'too_fast', count: data.count });
       }
